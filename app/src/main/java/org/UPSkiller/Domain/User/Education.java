@@ -17,14 +17,14 @@ public class Education {
     private Long id;
 
     @Column(name = "user_id",nullable = false,unique = true)
-    private String userid;
+    private String userId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "education_level")
     private EducationLevel educationLevel;
 
     private String institutionName;
-    private String filedOfStudy;
+    private String fieldOfStudy;
 
     private Integer startYear;
     private Integer endYear;

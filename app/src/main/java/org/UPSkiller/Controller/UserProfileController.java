@@ -3,7 +3,9 @@ package org.UPSkiller.Controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.UPSkiller.Dto.Education.EducationRequest;
+import org.UPSkiller.Dto.Education.EducationResponse;
 import org.UPSkiller.Dto.Job.JobPreferenceRequest;
+import org.UPSkiller.Dto.Job.JobPreferenceResponse;
 import org.UPSkiller.Dto.Profile.UserProfileRequest;
 import org.UPSkiller.Dto.Profile.UserProfileResponse;
 import org.UPSkiller.Service.UserProfileService;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -53,5 +56,19 @@ public class UserProfileController {
     ){
         userProfileService.saveJobPreference(userId, request);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/education")
+    public ResponseEntity<List<EducationResponse>> getEducation(
+            @RequestHeader("X-USER-ID") String userId
+    ){
+        return ResponseEntity.ok(userProfileService.getEducation(userId));
+    }
+
+    @GetMapping("/job-preference")
+    public ResponseEntity<List<JobPreferenceResponse>> getJobPreference(
+            @RequestHeader("X-USER-ID") String userId
+    ){
+        return ResponseEntity.ok(Collections.singletonList(userProfileService.getJobPreference(userId)));
     }
 }

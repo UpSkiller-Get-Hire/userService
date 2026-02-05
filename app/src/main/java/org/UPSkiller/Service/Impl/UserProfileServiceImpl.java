@@ -7,7 +7,9 @@ import org.UPSkiller.Domain.User.JobPreference;
 import org.UPSkiller.Domain.User.PreferredRole;
 import org.UPSkiller.Domain.User.UserProfile;
 import org.UPSkiller.Dto.Education.EducationRequest;
+import org.UPSkiller.Dto.Education.EducationResponse;
 import org.UPSkiller.Dto.Job.JobPreferenceRequest;
+import org.UPSkiller.Dto.Job.JobPreferenceResponse;
 import org.UPSkiller.Dto.Profile.UserProfileRequest;
 import org.UPSkiller.Dto.Profile.UserProfileResponse;
 import org.UPSkiller.Service.UserProfileService;
@@ -75,10 +77,10 @@ public class UserProfileServiceImpl implements UserProfileService {
 
         List<Education> educations = educationRequests.stream()
                 .map(req-> Education.builder()
-                        .userid(userId)
+                        .userId(userId)
                         .educationLevel(req.getEducationLevel())
                         .institutionName(req.getInstitutionName())
-                        .filedOfStudy(req.getFieldOfStudy())
+                        .fieldOfStudy(req.getFieldOfStudy())
                         .startYear(req.getStartYear())
                         .endYear(req.getEndYear())
                         .currentlyStudying(req.isCurrentlyStudying())
@@ -113,5 +115,38 @@ public class UserProfileServiceImpl implements UserProfileService {
                 ).toList();
 
         preferredRoleRepository.saveAll(roles);
+    }
+
+    public List<EducationResponse> getEducation(String userId) {
+        return educationRepository.findByUserId(userId).stream()
+                .map(e->EducationResponse.builder()
+                        .educationLevel(String.valueOf(e.getEducationLevel()))
+                        .instituteName(e.getInstitutionName())
+                        .fieldOfStudy(e.getFieldOfStudy())
+                        .startYear(e.getStartYear())
+                        .endYear(e.getEndYear())
+                        .currentlyStudying(e.getCurrentlyStudying())
+                        .build()
+                ).toList();
+    }
+
+    public JobPreferenceResponse getJobPreference(String userId) {
+        JobPreference jobPreference = jobPreferenceRepository.findByUserId(userId).orElseThrow(
+                ()->new RuntimeException("JobPreference not found")
+        );
+
+        List<String> roles = preferredRoleRepository.findByJobPreferenceId(jobPreference.getId())
+                .stream()
+                .map(PreferredRole::getRoleName)
+                .toList();
+
+        return JobPreferenceResponse.builder()
+                .jobCategory(jobPreference.getJobCategory())
+                .jobType(jobPreference.getJobType())
+                .workmode(jobPreference.getWorkMode())
+                .experienceLevel(jobPreference.getExperienceLevel())
+                .availability(jobPreference.getAvailability())
+                .preferredRoles(roles)
+                .build();
     }
 }

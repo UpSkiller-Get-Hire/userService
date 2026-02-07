@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user/profile")
@@ -71,4 +72,18 @@ public class UserProfileController {
     ){
         return ResponseEntity.ok(Collections.singletonList(userProfileService.getJobPreference(userId)));
     }
+
+
+    //for testing
+    @GetMapping("/me")
+    public Map<String, String> me(
+            @RequestHeader("X-User-Id") String userId,
+            @RequestHeader(value = "X-User-Role", required = false) String role
+    ) {
+        return Map.of(
+                "userId", userId,
+                "role", role
+        );
+    }
+
 }

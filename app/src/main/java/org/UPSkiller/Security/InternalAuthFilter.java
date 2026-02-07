@@ -25,7 +25,7 @@ public class InternalAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String internalKey = request.getHeader("X-INTERNAL-KEY");
-        String userId = request.getHeader("X-USER-ID");
+        String userId = request.getHeader("X-User-Id");
 
         if(internalKey == null || !internalKey.equals(expectedInternalKey)){
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -38,5 +38,8 @@ public class InternalAuthFilter extends OncePerRequestFilter {
             return;
         }
         filterChain.doFilter(request,response);
+
+
+
     }
 }

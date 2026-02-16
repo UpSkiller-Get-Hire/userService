@@ -24,6 +24,7 @@ public class UserCv {
     @Column(name = "cv_url",nullable = false)
     private String cvUrl;
 
+    @Column(name = "uploaded_at")
     private LocalDateTime uploadedAt;
 
 }

@@ -9,9 +9,11 @@ import org.UPSkiller.Dto.Job.JobPreferenceRequest;
 import org.UPSkiller.Dto.Job.JobPreferenceResponse;
 import org.UPSkiller.Dto.Profile.UserProfileRequest;
 import org.UPSkiller.Dto.Profile.UserProfileResponse;
+import org.UPSkiller.Service.CvEventProducer;
 import org.UPSkiller.Service.UserCvService;
 import org.UPSkiller.Service.UserProfileService;
 import org.UPSkiller.repository.UserCvRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.Repository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +35,10 @@ public class UserProfileController {
     private final UserProfileService userProfileService;
     private final UserCvService userCvService;
     private final UserCvRepository userCvRepository;
+    private final CvEventProducer cvEventProducer;
+
+    @Value("${minio.bucket}")
+    private String bucket;
 
     @GetMapping
     public ResponseEntity<UserProfileResponse> getProfile(
@@ -95,6 +101,8 @@ public class UserProfileController {
         userCvRepository.save(
                 new UserCv(null,userId,fileName, LocalDateTime.now()) // here fileName will be replaced with url
         );
+
+        cvEventProducer.sendEvent(userId,fileName,bucket);
 
         return ResponseEntity.ok().build();
 

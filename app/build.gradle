@@ -52,6 +52,9 @@ dependencies {
     //minio
     implementation 'io.minio:minio:8.6.0'
 
+    //kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
